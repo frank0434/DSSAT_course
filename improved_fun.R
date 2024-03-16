@@ -11,6 +11,28 @@ weather_data <- read_excel('weather data Ludhiana India PULU0001.xlsx', skip = 4
 weather_highTmax <- read_excel('weather data Ludhiana India PULU0001-increase T.xlsx', skip = 4) |> as.data.table()
 weather_data <- read_excel('weather.xlsx', .name_repair = "universal") |> as.data.table()
 
+obspre <- read_excel("runall5.xlsx", sheet = 2, skip = 1) |> as.data.table()
+
+obspre[,':=' (Observed...2 = as.numeric(Observed...2),
+              Simulated...3 = as.numeric(Simulated...3))]
+obspre[!is.na(`Variable Name`)] |> 
+  ggplot(aes(Observed...2, Simulated...3))+
+  geom_point(size = 5)+
+  labs( x = "Observed Grain Yield DM kg/ha",
+        y = "Simulated Grain Yield DM kg/ha") +
+  geom_abline(color = "red", linewidth = 2)+
+  ylim( c(2000, 5000)) +
+  xlim( c(2000, 5000)) +
+  theme_bw()+
+  theme(axis.line.x = element_blank(),axis.line.y = element_blank(),
+        panel.background =  element_blank(),panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text = element_text(size=fontsize),
+        axis.title=element_text(size=fontsize),
+        axis.title.y.right=element_text(size=fontsize),
+        axis.line = element_line(colour = "black")) 
+
+ggsave("obs_pre.svg", height = 7, width = 8)
 thot <- 30.9 #threshold temperature value
 thotmin <- 25 #threshold temperature value
 thotmax <- 34 #threshold temperature value
